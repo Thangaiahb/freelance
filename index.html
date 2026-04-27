@@ -1,1909 +1,816 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en-US">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>VidLabs — 3D Navbar | Video Hero | Digital Agency</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* DARK MODE COLORS */
-    :root {
-      --bg: #030303;
-      --bg-surface: #0a0a0a;
-      --card: #0e0e0e;
-      --border: rgba(255, 255, 255, 0.06);
-      --text: #f2eee9;
-      --muted: #6a6560;
-      --accent-primary: #e8c547;
-      --accent-secondary: #ff5c3a;
-      --accent-tertiary: #3fe0c0;
-      --accent-glow: rgba(232, 197, 71, 0.3);
-      --gradient-start: #e8c547;
-      --gradient-end: #ff5c3a;
-      --nav-glow: rgba(232, 197, 71, 0.15);
-    }
-
-    /* LIGHT MODE COLORS */
-    [data-theme="light"] {
-      --bg: #fef9ef;
-      --bg-surface: #ffffff;
-      --card: #ffffff;
-      --border: rgba(0, 0, 0, 0.08);
-      --text: #1a1a1a;
-      --muted: #8b8580;
-      --accent-primary: #d4a017;
-      --accent-secondary: #e86a2c;
-      --accent-tertiary: #2c9c82;
-      --accent-glow: rgba(212, 160, 23, 0.2);
-      --gradient-start: #d4a017;
-      --gradient-end: #e86a2c;
-      --nav-glow: rgba(212, 160, 23, 0.1);
-    }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      transition: background 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1), color 0.4s ease;
-      cursor: auto;
-    }
-
-    /* Show cursor on desktop */
-    @media (min-width: 769px) {
-      body {
-        cursor: default;
-      }
-
-      .cursor-dot,
-      .cursor-ring,
-      .cursor-shadow {
-        display: block;
-      }
-    }
-
-    @media (max-width: 768px) {
-
-      .cursor-shadow,
-      .cursor-dot,
-      .cursor-ring,
-      .cursor-tail {
-        display: none !important;
-      }
-    }
-
-    /* ========== CURSOR EFFECTS ========== */
-    .cursor-shadow {
-      position: fixed;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9997;
-      transform: translate(-50%, -50%);
-      filter: blur(12px);
-      opacity: 0.6;
-      display: none;
-    }
-
-    .cursor-dot {
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      background: var(--accent-primary);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 20px var(--accent-primary);
-      display: none;
-    }
-
-    .cursor-ring {
-      position: fixed;
-      width: 42px;
-      height: 42px;
-      border: 1.5px solid var(--accent-primary);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      opacity: 0.8;
-      display: none;
-    }
-
-    @media (min-width: 769px) {
-
-      .cursor-shadow,
-      .cursor-dot,
-      .cursor-ring {
-        display: block;
-      }
-    }
-
-    /* ========== 3D NAVBAR ========== */
-    nav {
-      position: fixed;
-      top: 20px;
-      left: 4%;
-      right: 4%;
-      width: 92%;
-      padding: 0.8rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-      border-radius: 60px;
-      backdrop-filter: blur(20px);
-      background: rgba(3, 3, 3, 0.55);
-      border: 1px solid var(--border);
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      transform-style: preserve-3d;
-      transform: perspective(1000px) translateZ(0);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-
-    nav:hover {
-      transform: perspective(1000px) translateZ(10px) rotateX(2deg);
-      border-color: var(--accent-primary);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
-      background: rgba(3, 3, 3, 0.75);
-    }
-
-    nav::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      background: linear-gradient(90deg, transparent, var(--accent-primary), var(--accent-secondary), transparent);
-      border-radius: 60px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      z-index: -1;
-    }
-
-    nav:hover::before {
-      opacity: 0.4;
-      animation: borderRotate 3s linear infinite;
-    }
-
-    @keyframes borderRotate {
-      0% {
-        background-position: -200% 0;
-      }
-
-      100% {
-        background-position: 200% 0;
-      }
-    }
-
-    [data-theme="light"] nav {
-      background: rgba(254, 249, 239, 0.7);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-    }
-
-    [data-theme="light"] nav:hover {
-      background: rgba(254, 249, 239, 0.9);
-    }
-
-    .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.8rem;
-      letter-spacing: 0.12em;
-      text-decoration: none;
-      color: var(--text);
-      position: relative;
-      transition: transform 0.3s ease;
-      display: inline-block;
-      z-index: 1001;
-    }
-
-    .logo:hover {
-      transform: translateZ(15px) scale(1.05);
-    }
-
-    .logo span {
-      color: var(--accent-primary);
-      text-shadow: 0 0 10px var(--accent-glow);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-      perspective: 500px;
-    }
-
-    .nav-links li {
-      transform-style: preserve-3d;
-      transition: transform 0.3s ease;
-    }
-
-    .nav-links li:hover {
-      transform: translateZ(12px) rotateX(5deg);
-    }
-
-    .nav-links a {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      transition: all 0.3s;
-      position: relative;
-      display: inline-block;
-      padding: 0.4rem 0;
-    }
-
-    .nav-links a::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-      border-radius: 2px;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-      transform: translateY(-2px);
-    }
-
-    .nav-links a:hover::before {
-      transform: scaleX(1);
-    }
-
-    .nav-right {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      z-index: 1001;
-    }
-
-    .celestial-toggle {
-      width: 52px;
-      height: 52px;
-      background: var(--card);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      position: relative;
-      transform-style: preserve-3d;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .celestial-toggle:hover {
-      transform: perspective(500px) translateZ(15px) rotateY(10deg) scale(1.08);
-      border-color: var(--accent-primary);
-      box-shadow: 0 10px 30px var(--accent-glow);
-    }
-
-    .toggle-icon {
-      font-size: 1.8rem;
-      transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1);
-    }
-
-    .celestial-toggle:hover .toggle-icon {
-      transform: rotate(180deg) scale(1.1);
-    }
-
-    [data-theme="dark"] .sun-icon {
-      display: none;
-    }
-
-    [data-theme="light"] .moon-icon {
-      display: none;
-    }
-
-    .cta-btn {
-      font-family: 'Syne', sans-serif;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      color: #000;
-      padding: 0.7rem 1.6rem;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      display: inline-block;
-      border: none;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transform-style: preserve-3d;
-    }
-
-    .cta-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    .cta-btn:hover {
-      transform: translateY(-3px) translateZ(10px);
-      box-shadow: 0 12px 28px var(--accent-glow);
-    }
-
-    .cta-btn:hover::before {
-      left: 100%;
-    }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 30px;
-      height: 22px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 1002;
-      position: relative;
-    }
-
-    .hamburger span {
-      display: block;
-      width: 100%;
-      height: 2px;
-      background: var(--text);
-      border-radius: 4px;
-      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    }
-
-    .hamburger.active span:nth-child(1) {
-      transform: translateY(10px) rotate(45deg);
-      background: var(--accent-primary);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: translateY(-10px) rotate(-45deg);
-      background: var(--accent-primary);
-    }
-
-    .mobile-menu {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 80%;
-      max-width: 320px;
-      height: 100vh;
-      background: var(--bg-surface);
-      backdrop-filter: blur(30px);
-      z-index: 999;
-      padding: 100px 2rem 2rem;
-      transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
-      border-left: 1px solid var(--border);
-    }
-
-    .mobile-menu.active {
-      right: 0;
-    }
-
-    .mobile-menu ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .mobile-menu a {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      color: var(--text);
-      transition: all 0.3s;
-      display: inline-block;
-    }
-
-    .mobile-menu a:hover {
-      color: var(--accent-primary);
-      transform: translateX(10px);
-    }
-
-    .menu-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(5px);
-      z-index: 998;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s;
-    }
-
-    .menu-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .noise::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 999;
-      opacity: 0.4;
-    }
-
-    .floating-orb {
-      position: fixed;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--accent-glow), transparent);
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(60px);
-      animation: floatOrb 12s infinite alternate;
-    }
-
-    @keyframes floatOrb {
-      0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 0.3;
-      }
-
-      100% {
-        transform: translate(100px, 80px) scale(1.3);
-        opacity: 0.6;
-      }
-    }
-
-    /* ========== HERO WITH VIDEO ========== */
-    .hero {
-      min-height: 100vh;
-      padding: 8rem 4rem 4rem;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .hero-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
-      z-index: -1;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-family: 'Syne', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-primary);
-      border: 1px solid rgba(232, 197, 71, 0.3);
-      padding: 0.4rem 1rem;
-      width: fit-content;
-      margin-bottom: 2rem;
-      backdrop-filter: blur(4px);
-    }
-
-    .hero-badge::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      background: var(--accent-secondary);
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1
-      }
-
-      50% {
-        opacity: 0.4
-      }
-    }
-
-    .hero-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(4rem, 10vw, 8rem);
-      line-height: 0.92;
-      letter-spacing: -0.02em;
-      max-width: 1000px;
-    }
-
-    .hero-title em {
-      font-style: italic;
-      font-family: 'Syne', sans-serif;
-      font-size: 0.45em;
-      font-weight: 800;
-      color: var(--accent-primary);
-      display: block;
-    }
-
-    .hero-sub {
-      margin-top: 2rem;
-      max-width: 500px;
-      font-size: 1rem;
-      line-height: 1.6;
-      color: var(--text);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 3rem;
-      margin-top: 3rem;
-    }
-
-    .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      color: var(--text);
-    }
-
-    .marquee {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 0;
-      background: var(--bg-surface);
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .marquee-track {
-      display: inline-flex;
-      animation: scrollMarquee 22s linear infinite;
-    }
-
-    .marquee-track span {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem;
-      letter-spacing: 0.2em;
-      padding: 0 2rem;
-      color: var(--muted);
-    }
-
-    .marquee-track span b {
-      color: var(--accent-primary);
-    }
-
-    @keyframes scrollMarquee {
-      0% {
-        transform: translateX(0)
-      }
-
-      100% {
-        transform: translateX(-50%)
-      }
-    }
-
-    section {
-      padding: 6rem 4rem;
-    }
-
-    .section-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      line-height: 1;
-      margin-bottom: 2rem;
-    }
-
-    /* STORY FLOW */
-    .story-flow {
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .story-steps {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    .story-step {
-      flex: 1;
-      text-align: center;
-      padding: 1.5rem;
-      background: var(--card);
-      border-radius: 32px;
-      transition: all 0.3s ease;
-      border: 1px solid var(--border);
-    }
-
-    .story-step:hover {
-      transform: translateY(-10px);
-      border-color: var(--accent-primary);
-    }
-
-    .step-icon {
-      font-size: 2.5rem;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-    }
-
-    .step-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .step-desc {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-    }
-
-    /* CATEGORY BOXES */
-    .category-5-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    .category-item {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 2rem 1rem;
-      text-align: center;
-      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-      border: 1px solid var(--border);
-      cursor: pointer;
-    }
-
-    .category-item:hover {
-      transform: translateY(-15px);
-      background: var(--bg-surface);
-      border-color: var(--accent-primary);
-      box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3);
-    }
-
-    .category-icon {
-      font-size: 2.2rem;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-    }
-
-    .category-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    /* WORK CARDS */
-    .work-grid-3d {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 3rem;
-      perspective: 1200px;
-    }
-
-    .work-card-3d {
-      position: relative;
-      aspect-ratio: 4/3;
-      transform-style: preserve-3d;
-      transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-      cursor: pointer;
-    }
-
-    .work-card-front,
-    .work-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    .work-card-front {
-      transform: rotateY(0deg);
-    }
-
-    .work-card-front img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .work-card-3d:hover .work-card-front img {
-      transform: scale(1.05);
-    }
-
-    .work-front-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-      padding: 1.5rem;
-    }
-
-    .work-category {
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      color: var(--accent-primary);
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-    }
-
-    .work-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: white;
-    }
-
-    .work-card-back {
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      transform: rotateY(180deg);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 1.5rem;
-      color: #000;
-    }
-
-    .work-card-back h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .work-card-back p {
-      font-size: 0.8rem;
-      margin-bottom: 1rem;
-      line-height: 1.4;
-    }
-
-    .work-card-back a {
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
-      border-bottom: 2px solid #000;
-      padding-bottom: 2px;
-    }
-
-    .work-card-3d.flipped {
-      transform: rotateY(180deg);
-    }
-
-    /* EXPERIENCE */
-    .experience-showcase {
-      background: linear-gradient(145deg, var(--bg-surface), var(--card));
-      border-radius: 48px;
-      padding: 3rem;
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .exp-stats {
-      display: flex;
-      justify-content: center;
-      gap: 4rem;
-      flex-wrap: wrap;
-    }
-
-    .exp-stat {
-      text-align: center;
-    }
-
-    .exp-number {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 4.5rem;
-      color: var(--accent-primary);
-      line-height: 1;
-    }
-
-    .exp-label {
-      font-size: 1rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* TESTIMONIALS */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .testimonial-card {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 2rem;
-      border: 1px solid var(--border);
-      transition: all 0.3s;
-    }
-
-    .testimonial-card:hover {
-      transform: scale(1.02);
-      border-color: var(--accent-primary);
-    }
-
-    .testimonial-text {
-      font-style: italic;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-      color: var(--text);
-    }
-
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .author-avatar {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      color: #000;
-    }
-
-    .author-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-    }
-
-    .author-title {
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    /* PRICING */
-    .pricing-3d-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 3rem;
-      perspective: 1000px;
-    }
-
-    .pricing-card-3d {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 2rem;
-      position: relative;
-      transition: transform 0.3s ease, box-shadow 0.3s;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .pricing-card-3d::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-      transform: scaleX(0);
-      transition: transform 0.4s;
-    }
-
-    .pricing-card-3d:hover::before {
-      transform: scaleX(1);
-    }
-
-    .pricing-card-3d.featured-3d {
-      transform: translateY(-10px) scale(1.02);
-      border-color: var(--accent-primary);
-    }
-
-    .price-3d {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3rem;
-      margin: 1rem 0;
-    }
-
-    .pricing-features {
-      list-style: none;
-      margin: 1.5rem 0;
-    }
-
-    .pricing-features li {
-      padding: 0.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-      border-bottom: 1px dashed var(--border);
-    }
-
-    .pricing-features li i {
-      color: var(--accent-tertiary);
-    }
-
-    /* SERVICES */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5px;
-      background: var(--border);
-      margin-top: 3rem;
-    }
-
-    .service-card {
-      background: var(--bg-surface);
-      padding: 2.5rem;
-      transition: all 0.4s;
-    }
-
-    .service-card:hover {
-      transform: translateY(-8px);
-      background: var(--card);
-    }
-
-    .service-icon {
-      font-size: 2rem;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-    }
-
-    .service-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-    .service-desc {
-      color: var(--muted);
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    /* CONTACT */
-    #contact {
-      background: var(--bg-surface);
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-    }
-
-    .form-input,
-    textarea {
-      width: 100%;
-      padding: 0.8rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text);
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      transition: border-color 0.3s;
-    }
-
-    .form-input:focus,
-    textarea:focus {
-      border-color: var(--accent-primary);
-      outline: none;
-    }
-
-    /* ABOUT PREVIEW */
-    .about-preview {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    .team-badge {
-      display: inline-block;
-      background: rgba(232, 197, 71, 0.1);
-      padding: 0.3rem 1rem;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-    }
-
-    .team-members {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .member {
-      text-align: center;
-    }
-
-    .member-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: var(--border);
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--accent-primary);
-    }
-
-    /* FOOTER */
-    footer {
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border);
-      padding: 3rem 4rem 2rem;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1.5fr;
-      gap: 3rem;
-      margin-bottom: 3rem;
-    }
-
-    .footer-col h4 {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 1.2rem;
-      text-transform: uppercase;
-      color: var(--accent-primary);
-    }
-
-    .footer-col a,
-    .footer-col p {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      line-height: 1.8;
-      display: block;
-    }
-
-    .footer-col a:hover {
-      color: var(--accent-primary);
-    }
-
-    .copyright {
-      text-align: center;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.7rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (max-width: 900px) {
-      nav {
-        left: 3%;
-        right: 3%;
-        width: 94%;
-        padding: 0.7rem 1.5rem;
-        top: 15px;
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .hamburger {
-        display: flex;
-      }
-
-      .logo {
-        font-size: 1.5rem;
-      }
-
-      .cta-btn {
-        padding: 0.5rem 1.2rem;
-        font-size: 0.65rem;
-      }
-
-      .celestial-toggle {
-        width: 44px;
-        height: 44px;
-      }
-
-      .toggle-icon {
-        font-size: 1.5rem;
-      }
-
-      .hero {
-        padding: 6rem 1.5rem 3rem;
-      }
-
-      section {
-        padding: 4rem 1.5rem;
-      }
-
-      .work-grid-3d,
-      .pricing-3d-grid,
-      .testimonials-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .category-5-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .contact-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .about-preview {
-        grid-template-columns: 1fr;
-      }
-
-      .story-steps {
-        flex-direction: column;
-      }
-
-      .exp-stats {
-        gap: 2rem;
-      }
-
-      .copyright {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-      }
-
-      footer {
-        padding: 2rem 1.5rem;
-      }
-    }
-
-    .video-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      overflow: hidden;
-    }
-
-    .video-container iframe {
-      width: 100vw;
-      height: 56.25vw;
-      min-height: 100vh;
-      min-width: 177.77vh;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <title>Home 03 Dark – Avista</title>
+    <meta name='robots' content='max-image-preview:large' />
+    <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+    <style id='wp-img-auto-sizes-contain-inline-css'>
+        img:is([sizes=auto i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }
+    </style>
+    <style id='wp-emoji-styles-inline-css'>
+        img.wp-smiley, img.emoji {
+            display: inline !important; border: none !important; box-shadow: none !important;
+            height: 1em !important; width: 1em !important; margin: 0 0.07em !important;
+            vertical-align: -0.1em !important; background: none !important; padding: 0 !important;
+        }
+    </style>
+    <style id='classic-theme-styles-inline-css'>
+        .wp-block-button__link {
+            color: #fff; background-color: #32373c; border-radius: 9999px; box-shadow: none;
+            text-decoration: none; padding: calc(.667em + 2px) calc(1.333em + 2px); font-size: 1.125em
+        }
+        .wp-block-file__button { background: #32373c; color: #fff; text-decoration: none }
+    </style>
+    <style id='global-styles-inline-css'>
+        :root {
+            --wp--preset--aspect-ratio--square: 1; --wp--preset--aspect-ratio--4-3: 4/3;
+            --wp--preset--aspect-ratio--3-4: 3/4; --wp--preset--aspect-ratio--3-2: 3/2;
+            --wp--preset--aspect-ratio--2-3: 2/3; --wp--preset--aspect-ratio--16-9: 16/9;
+            --wp--preset--aspect-ratio--9-16: 9/16;
+            --wp--preset--color--black: #000000; --wp--preset--color--cyan-bluish-gray: #abb8c3;
+            --wp--preset--color--white: #ffffff; --wp--preset--color--pale-pink: #f78da7;
+            --wp--preset--color--vivid-red: #cf2e2e; --wp--preset--color--luminous-vivid-orange: #ff6900;
+            --wp--preset--color--luminous-vivid-amber: #fcb900; --wp--preset--color--light-green-cyan: #7bdcb5;
+            --wp--preset--color--vivid-green-cyan: #00d084; --wp--preset--color--pale-cyan-blue: #8ed1fc;
+            --wp--preset--color--vivid-cyan-blue: #0693e3; --wp--preset--color--vivid-purple: #9b51e0;
+            --wp--preset--font-size--small: 13px; --wp--preset--font-size--medium: 20px;
+            --wp--preset--font-size--large: 36px; --wp--preset--font-size--x-large: 42px;
+            --wp--preset--spacing--20: 0.44rem; --wp--preset--spacing--30: 0.67rem;
+            --wp--preset--spacing--40: 1rem; --wp--preset--spacing--50: 1.5rem;
+            --wp--preset--spacing--60: 2.25rem; --wp--preset--spacing--70: 3.38rem;
+            --wp--preset--spacing--80: 5.06rem;
+        }
+        :where(.is-layout-flex) { gap: 0.5em; }
+        :where(.is-layout-grid) { gap: 0.5em; }
+        body .is-layout-flex { display: flex; }
+        .is-layout-flex { flex-wrap: wrap; align-items: center; }
+        .is-layout-flex > :is(*, div) { margin: 0; }
+        body .is-layout-grid { display: grid; }
+        .is-layout-grid > :is(*, div) { margin: 0; }
+        :where(.wp-block-columns.is-layout-flex) { gap: 2em; }
+        :where(.wp-block-columns.is-layout-grid) { gap: 2em; }
+    </style>
+
+    <!-- External Stylesheets -->
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=6.1.4' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.2' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.2' media='only screen and (max-width: 768px)' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.2' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/avista-core/assets/css/elh-element.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Geist+Mono:wght@100..900&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/animate-min.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/bootstrap.min.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/magnific-popup.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/nice-select.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/swiper.min.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/fontawesome-min.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/odometer.min.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/avista-core.css?ver=1777209487' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/avista-companion.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/avista-extra.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/assets/css/avista-custom.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/style.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/themes/avista/woocommerce/woocommerce.css?ver=6.9' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css?ver=5.44.0' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/elementor/assets/css/frontend.min.css?ver=3.33.4' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-7.css?ver=1776695811' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2793.css?ver=1776696403' media='all' />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&display=swap' media='all' />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&display=swap' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/avista-core/assets/css/flaticon-avista.css?ver=1777209487' media='all' />
+    <!-- Home 01 Dark extra stylesheets -->
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2741.css?ver=1776699484' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2750.css?ver=1776699484' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2141.css?ver=1776695828' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2686.css?ver=1776695811' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/avista-core/assets/css/font-awesome.min.css?ver=1777214182' media='all' />
+
+    <style id='avista-primary-color-inline-css'>
+        :root {
+            --as-clr-pr-1: #fd3f00;
+            --as-clr-pr-3: #fb0d1f;
+        }
+        ::-webkit-scrollbar-thumb { background-color: #fd3f00; }
+    </style>
+    <style type="text/css">
+        .tx-header .tx-logo img { max-width: 142px; }
+    </style>
+    <style id="wp-custom-css">
+        .as-footer-1-newsletter-form-btn:hover span { color: #000; }
+    </style>
+    <style id="custom-section-fix">
+        /* Remove white line gap between sections */
+        html, body, .page-wrapper {
+            background-color: #0a0a0a !important;
+        }
+        .elementor,
+        .elementor-element,
+        .elementor-widget-container,
+        .e-con,
+        .e-con-full,
+        .e-flex,
+        .e-parent {
+            background-color: transparent !important;
+        }
+        /* All top-level containers must be dark */
+        .as-about-4-area,
+        .as-portfolio-1-area,
+        .as-portfolio-4-area,
+        .as-marquee-text-4-area,
+        .as-cta-1-area,
+        .as-hero-4-area {
+            background-color: #0a0a0a !important;
+        }
+        /* Zero out any gap-producing spacing on row wrappers */
+        div[data-element_type="container"].e-parent {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="https://themexriver.com/wp/avista/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+    <script src="https://themexriver.com/wp/avista/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js"></script>
 </head>
 
-<body>
+<body class="wp-singular page-template page-template-elementor_header_footer page wp-embed-responsive wp-theme-avista as-home-4 has-dark theme-avista woocommerce-no-js no-sidebar elementor-default elementor-template-full-width elementor-kit-7 elementor-page">
 
-  <!-- CURSOR ELEMENTS -->
-  <div class="cursor-shadow"></div>
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
-  <div class="cursor-tail"></div>
-  <div class="noise"></div>
+    <div class="page-wrapper">
 
-  <!-- FLOATING ORBS -->
-  <div class="floating-orb" style="top: 15%; left: -3%; width: 350px; height: 350px;"></div>
-  <div class="floating-orb"
-    style="bottom: 5%; right: -3%; width: 400px; height: 400px; animation-duration: 15s; animation-direction: alternate-reverse;">
-  </div>
-
-  <!-- 3D NAVBAR -->
-  <nav id="mainNav">
-    <a href="#" class="logo">Vid<span>Labs</span></a>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <div class="celestial-toggle" id="themeToggle">
-        <i class="fas fa-sun toggle-icon sun-icon"></i>
-        <i class="fas fa-moon toggle-icon moon-icon"></i>
-      </div>
-      <a href="#contact" class="cta-btn">Start</a>
-      <button class="hamburger" id="hamburgerBtn">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Mobile Menu -->
-  <div class="menu-overlay" id="menuOverlay"></div>
-  <div class="mobile-menu" id="mobileMenu">
-    <ul>
-      <li><a href="#home" class="mobile-nav-link">Home</a></li>
-      <li><a href="#services" class="mobile-nav-link">Services</a></li>
-      <li><a href="#work" class="mobile-nav-link">Work</a></li>
-      <li><a href="#pricing" class="mobile-nav-link">Pricing</a></li>
-      <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
-    </ul>
-  </div>
-
-  <!-- HERO WITH VIDEO -->
-  <section id="home" class="hero">
-    <div class="video-container">
-      <video autoplay muted loop playsinline class="hero-video">
-        <source src="videos/video.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="hero-badge">✦ 3D Navbar | Video Hero | Story Flow ✦</div>
-    <h1 class="hero-title reveal">
-      <em>Digital Marketing</em>
-      We don't just<br>market. We <span style="color:var(--accent-primary)">direct.</span>
-    </h1>
-    <p class="hero-sub reveal">Cinematic storytelling, performance strategy & motion design — with immersive video
-      header.</p>
-    <div class="hero-stats reveal">
-      <div>
-        <div class="stat-num">150+</div>
-        <div class="stat-label">Campaigns</div>
-      </div>
-      <div>
-        <div class="stat-num">98%</div>
-        <div class="stat-label">Retention</div>
-      </div>
-      <div>
-        <div class="stat-num">24/7</div>
-        <div class="stat-label">Creative support</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee">
-    <div class="marquee-track">
-      <span><b>✦</b> Video Branding <b>✦</b></span><span> Digital Strategy <b>✦</b></span><span> Motion Design
-        <b>✦</b></span><span> Social Media <b>✦</b></span><span> Performance Ads <b>✦</b></span><span> 3D Animation
-        <b>✦</b></span>
-      <span><b>✦</b> Video Branding <b>✦</b></span><span> Digital Strategy <b>✦</b></span><span> Motion Design
-        <b>✦</b></span><span> Social Media <b>✦</b></span><span> Performance Ads <b>✦</b></span><span> 3D Animation
-        <b>✦</b></span>
-    </div>
-  </div>
-
-  <!-- STORY FLOW SECTION -->
-  <section class="story-flow">
-    <div class="section-label reveal">From start to animation</div>
-    <h2 class="section-title reveal">Our storytelling <br>journey</h2>
-    <div class="story-steps">
-      <div class="story-step reveal">
-        <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
-        <div class="step-title">Ideation</div>
-        <div class="step-desc">We listen & conceptualize your vision.</div>
-      </div>
-      <div class="story-step reveal">
-        <div class="step-icon"><i class="fas fa-drafting-compass"></i></div>
-        <div class="step-title">Strategy</div>
-        <div class="step-desc">Data-driven roadmap & creative blueprint.</div>
-      </div>
-      <div class="story-step reveal">
-        <div class="step-icon"><i class="fas fa-film"></i></div>
-        <div class="step-title">Production</div>
-        <div class="step-desc">Cinematic shoots & motion magic.</div>
-      </div>
-      <div class="story-step reveal">
-        <div class="step-icon"><i class="fas fa-chart-line"></i></div>
-        <div class="step-title">Launch & Scale</div>
-        <div class="step-desc">Amplify, analyze & grow.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVICES SECTION -->
-  <section id="services">
-    <p class="section-label reveal">what we craft</p>
-    <h2 class="section-title reveal">Services that<br>elevate brands</h2>
-    <div class="services-grid">
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-video"></i></div>
-        <div class="service-name">Video Production</div>
-        <div class="service-desc">From concept to color grading — high-end cinematic branding.</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
-        <div class="service-name">Digital Marketing</div>
-        <div class="service-desc">Data-driven strategies, SEO, and hyper-targeted campaigns.</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-palette"></i></div>
-        <div class="service-name">Brand Identity</div>
-        <div class="service-desc">Visual storytelling that resonates across every touchpoint.</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-cube"></i></div>
-        <div class="service-name">Motion Graphics</div>
-        <div class="service-desc">3D & 2D animation, kinetic typography, and explainers.</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-chart-simple"></i></div>
-        <div class="service-name">Performance Marketing</div>
-        <div class="service-desc">Paid social, Google Ads, and ROAS-focused funnels.</div>
-      </div>
-      <div class="service-card reveal">
-        <div class="service-icon"><i class="fas fa-hashtag"></i></div>
-        <div class="service-name">Social Media Growth</div>
-        <div class="service-desc">Community, content strategy, and viral hooks.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATEGORY 5 BOXES -->
-  <section>
-    <p class="section-label reveal">expertise pillars</p>
-    <h2 class="section-title reveal">What we deliver best</h2>
-    <div class="category-5-grid">
-      <div class="category-item">
-        <div class="category-icon"><i class="fas fa-video"></i></div>
-        <div class="category-name">Video Production</div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon"><i class="fas fa-trademark"></i></div>
-        <div class="category-name">Branding</div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon"><i class="fab fa-instagram"></i></div>
-        <div class="category-name">Social Media</div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon"><i class="fas fa-chart-simple"></i></div>
-        <div class="category-name">Marketing</div>
-      </div>
-      <div class="category-item">
-        <div class="category-icon"><i class="fas fa-cubes"></i></div>
-        <div class="category-name">Animation</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WORK SECTION -->
-  <section id="work">
-    <p class="section-label reveal">3D Portfolio</p>
-    <h2 class="section-title reveal">Immersive<br>showreel</h2>
-    <div class="work-grid-3d" id="workGrid3d">
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/20/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Launch Film</div>
-            <div class="work-title">Hyperdrive EV</div>
-          </div>
+        <!-- preloader start -->
+        <div class="as-preloader as-home-4">
+            <div class="as-preloader-wrap">
+                <div class="loader as-h-1">
+                    <span class="loader_letter">L</span>
+                    <span class="loader_letter">
+                        <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/fevicon-1.webp" alt="fevicon-1">
+                    </span>
+                    <span class="loader_letter">A</span>
+                    <span class="loader_letter">D</span>
+                    <span class="loader_letter">I</span>
+                    <span class="loader_letter">N</span>
+                    <span class="loader_letter">G</span>
+                    <span class="loader_letter">.</span>
+                    <span class="loader_letter">.</span>
+                    <span class="loader_letter">.</span>
+                </div>
+            </div>
         </div>
-        <div class="work-card-back">
-          <h3>Hyperdrive EV</h3>
-          <p>Cinematic car launch campaign with stunning VFX.</p><a href="#">View Case Study →</a>
+        <!-- preloader end -->
+
+        <!-- back-to-top-button-start -->
+        <div class="wa-back-to-top wa_backToTop">
+            <i class="fa-solid fa-angle-up"></i>
         </div>
-      </div>
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/26/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Brand Identity</div>
-            <div class="work-title">Komorebi Studio</div>
-          </div>
+        <!-- back-to-top-button-end -->
+
+        <!-- header start -->
+        <div data-elementor-type="wp-post" data-elementor-id="2660" class="elementor elementor-2660">
+            <div class="elementor-element elementor-element-1c910d8 e-con-full e-flex e-con e-parent" data-id="1c910d8" data-element_type="container">
+                <div class="elementor-element elementor-element-a98b99b elementor-widget elementor-widget-tx_headers elh-el tx_headers"
+                    data-id="a98b99b" data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_3&quot;}"
+                    data-widget_type="tx_headers.default">
+                    <div class="elementor-widget-container">
+                        <div class="as-home-4-side-menu">
+                            <nav class="as-main-navigation as-header-4-menu d-none d-lg-block">
+                                <ul id="main-nav" class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-hut"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/" target="_self" rel="">Home 01</a></li>
+                                            <li><a href="https://themexriver.com/wp/avista/home-02/" target="_self" rel="">Home 02</a></li>
+                                            <li><a href="https://themexriver.com/wp/avista/home-03/" target="_self" rel="">Home 03</a></li>
+                                            <li><a href="https://themexriver.com/wp/avista/home-04/" target="_self" rel="">Home 04</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-person"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/about/" target="_self" rel="">About Us</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-document"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/our-services/" target="_self" rel="">Projects</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-luggage"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/our-services/" target="_self" rel="">Portfolio</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-question"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/faqs/" target="_self" rel="">Faqs</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-speech-bubble"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/blog/" target="_self" rel="">Blog</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#" target="_self" rel=""><i aria-hidden="true" class="flaticon flaticon-phone-call"></i></a>
+                                        <ul class="dropdown-menu clearfix">
+                                            <li><a href="https://themexriver.com/wp/avista/contact-us/" target="_self" rel="">Contact Us</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <header class="as-header-4-area">
+                            <div class="container as-container-1">
+                                <div class="as-header-4-wrap">
+                                    <a href="https://themexriver.com/wp/avista/" aria-label="logo" class="tx-logo main-logo">
+                                        <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/logo-4.svg" alt="logo-4">
+                                    </a>
+                                    <div class="right">
+                                        <a href="https://themexriver.com/wp/avista/contact-us/" target="_self" rel="" aria-label="Get started" class="as-pr-btn-3">
+                                            <span class="text" data-back="Get started" data-front="Get started"></span>
+                                        </a>
+                                        <button type="button" aria-label="menu" class="sr-offcanvas-btn-1 offcanvas_toggle d-xl-none d-inline-block">
+                                            <i class="fa-solid fa-bars"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        <div class="wa-offcanvas-area offcanvas_box_active lenis lenis-smooth">
+                            <div class="wa-offcanvas-wrap">
+                                <div class="wa-offcanvas-top">
+                                    <a href="https://themexriver.com/wp/avista/" class="tx-logo wa-offcanvas-top-logo" aria-label="Site Logo">
+                                        <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/logo-1.webp" alt="logo-1">
+                                    </a>
+                                    <button class="wa-offcanvas-close offcanvas_box_close" aria-label="close">
+                                        <span></span><span></span>
+                                    </button>
+                                </div>
+
+                                <nav class="mobile-main-navigation mb-50 d-block d-lg-block">
+                                    <div class="menu-main-menu-container">
+                                        <ul id="m-main-nav" class="nav navbar-nav clearfix list-unstyled">
+                                            <li class="menu-item dropdown">
+                                                <a href="https://themexriver.com/wp/avista/">Home</a>
+                                                <ul class="dropdown-menu">
+                                                    <li class="menu-item dropdown">
+                                                        <a href="#0">Multipage</a>
+                                                        <ul class="dropdown-menu">
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/">Home 01</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-02/">Home 02</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-03/">Home 03</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-04/">Home 04</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="menu-item dropdown">
+                                                        <a href="#0">Darkpage</a>
+                                                        <ul class="dropdown-menu">
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-01-dark/">Home 01 Dark</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-02-dark/">Home 02 Dark</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-03-dark/" aria-current="page">Home 03 Dark</a></li>
+                                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/home-04-dark/">Home 04 Dark</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="menu-item"><a href="https://themexriver.com/wp/avista/about/">About</a></li>
+                                            <li class="menu-item dropdown">
+                                                <a href="https://themexriver.com/wp/avista/our-services/">Services</a>
+                                                <ul class="dropdown-menu">
+                                                    <li class="menu-item"><a href="https://themexriver.com/wp/avista/our-services/">Services</a></li>
+                                                    <li class="menu-item"><a href="https://themexriver.com/wp/avista/services/smart-schedule-control/">Service Details</a></li>
+                                                </ul>
+                                            </li>
+                                            <li class="menu-item dropdown">
+                                                <a href="#0">Pages</a>
+                                                <ul class="dropdown-menu">
+                                                    <li class="menu-item"><a href="https://themexriver.com/wp/avista/faqs/">Faqs</a></li>
+                                                    <li class="menu-item"><a href="https://themexriver.com/wp/avista/blog/">Blog</a></li>
+                                                    <li class="menu-item"><a href="https://themexriver.com/wp/avista/contact-us/">Contact us</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+
+                                <div class="wa-offcanvas-gallery">
+                                    <h6 class="wa-offcanvas-gallery-title as-h-1">Stay Inspired with Instagram</h6>
+                                    <div class="wa-offcanvas-gallery-grid">
+                                        <a href="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-1.webp" aria-label="" class="popup-img wa-offcanvas-gallery-item wa-img-cover wa-fix">
+                                            <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-1.webp" alt="">
+                                        </a>
+                                        <a href="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-2.webp" aria-label="" class="popup-img wa-offcanvas-gallery-item wa-img-cover wa-fix">
+                                            <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-2.webp" alt="">
+                                        </a>
+                                        <a href="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-4.webp" aria-label="" class="popup-img wa-offcanvas-gallery-item wa-img-cover wa-fix">
+                                            <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-4.webp" alt="">
+                                        </a>
+                                        <a href="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-3.webp" aria-label="" class="popup-img wa-offcanvas-gallery-item wa-img-cover wa-fix">
+                                            <img src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/p1-img-3.webp" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="wa-offcanvas-social">
+                                    <h6 class="wa-offcanvas-social-title as-h-1">We're on social media:</h6>
+                                    <div class="wa-offcanvas-social-flex d-flex flex-wrap">
+                                        <a class="wa-offcanvas-social-link" href="#" target="_self" rel="" aria-label="LinkedIn"><i aria-hidden="true" class="fab fa-linkedin-in"></i></a>
+                                        <a class="wa-offcanvas-social-link" href="#" target="_self" rel="" aria-label="Facebook"><i aria-hidden="true" class="fab fa-facebook-f"></i></a>
+                                        <a class="wa-offcanvas-social-link" href="#" target="_self" rel="" aria-label="Twitter"><i aria-hidden="true" class="fab fa-x-twitter"></i></a>
+                                        <a class="wa-offcanvas-social-link" href="#" target="_self" rel="" aria-label="Instagram"><i aria-hidden="true" class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="work-card-back">
-          <h3>Komorebi Studio</h3>
-          <p>Complete brand overhaul including logo and motion identity.</p><a href="#">View Case Study →</a>
+        <!-- header end -->
+
+        <div class="wa-overly"></div>
+
+        <!-- ============================================================ -->
+        <!-- MAIN CONTENT: Home 03 Dark sections + Home 01 Dark sections  -->
+        <!-- ============================================================ -->
+        <div data-elementor-type="wp-page" data-elementor-id="2793-2741-combined" class="elementor elementor-2793">
+
+            <!-- ========== HOME 03 DARK: Hero Section ========== -->
+            <div class="elementor-element elementor-element-a60920e e-con-full e-flex e-con e-parent" data-id="a60920e" data-element_type="container">
+                <div class="elementor-element elementor-widget elementor-widget-tx_hero_section elh-el tx_hero_section"
+                    data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_2&quot;}"
+                    data-widget_type="tx_hero_section.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-hero-4-area wa-p-relative tx-section">
+                            <div class="as-hero-4-bg-img text-center">
+                                <video src="https://themexriver.com/wp/avista/h4-video.mp4" autoplay muted loop class="w-100"></video>
+                            </div>
+                            <div class="container as-container-1">
+                                <div class="as-hero-4-wrap wa-p-relative">
+                                    <div class="as-hero-4-circle-text wow fadeInRight2">
+                                        <img decoding="async"
+                                            src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/h4-circle-text.webp"
+                                            alt="h4-circle-text" class="circle-text wow rotateIn" data-wow-delay=".3s">
+                                        <div class="icon">
+                                            <img decoding="async"
+                                                src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/s4-illus.webp"
+                                                alt="s4-illus">
+                                        </div>
+                                    </div>
+                                    <div class="as-hero-4-content">
+                                        <h4 class="as-h-1 subtitle">
+                                            <i class="wow rotateIn flaticon flaticon-asterisk" aria-hidden="true" data-wow-delay=".3s"></i>
+                                            <span class="wa-split-up2">We are Digital Agency</span>
+                                        </h4>
+                                        <h2 class="tx-title as-h-1 title wa-split-up2">Best Solutions</h2>
+                                        <div class="as-hero-4-author">
+                                            <div class="author-img">
+                                                <div class="author-img-elm wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".4s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-1.webp" alt="">
+                                                </div>
+                                                <div class="author-img-elm wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".5s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-2.webp" alt="">
+                                                </div>
+                                                <div class="author-img-elm wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".6s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-3.webp" alt="">
+                                                </div>
+                                                <div class="author-img-elm wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".7s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-4.webp" alt="">
+                                                </div>
+                                            </div>
+                                            <a href="#" target="_self" rel="" aria-label="BOOK A CALL"
+                                                class="author-btn wow fadeInRight2 wa_magnetic_btn_1" data-wow-delay=".8s">
+                                                <i aria-hidden="true" class="flaticon flaticon-next"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="as-hero-4-social">
+                                <a href="#" target="_self" rel="" class="social-elm as-p-1"><i aria-hidden="true" class="fab fa-instagram"></i> Instagram</a>
+                                <a href="#" target="_self" rel="" class="social-elm as-p-1"><i aria-hidden="true" class="fas fa-basketball-ball"></i> Dribble</a>
+                                <a href="#" target="_self" rel="" class="social-elm as-p-1"><i aria-hidden="true" class="fab fa-x-twitter"></i> twitter</a>
+                                <a href="#" target="_self" rel="" class="social-elm as-p-1"><i aria-hidden="true" class="fab fa-facebook-f"></i> facebook</a>
+                            </div>
+                        </section>
+                        <div class="as-home-4-logo-fixed">
+                            <div class="container as-container-1">
+                                <h2 class="as-h-1 logo-text wa_title_spilt_1" data-delay=".3">AVISTA</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HOME 03 DARK: Portfolio Grid ========== -->
+            <div class="elementor-element elementor-element-7f3c315 e-con-full e-flex e-con e-parent" data-id="7f3c315" data-element_type="container">
+                <div class="elementor-element elementor-widget elementor-widget-tx_service_lists elh-el tx_service_lists"
+                    data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_1&quot;}"
+                    data-widget_type="tx_service_lists.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-portfolio-4-area wa-p-relative tx-section">
+                            <div class="container as-container-1">
+                                <div class="as-portfolio-4-wrap">
+                                    <div class="as-portfolio-4-item wa-fix wa-img-cover wa_magnetic_1_trigger">
+                                        <img decoding="async" class="wa_magnetic_1_elm"
+                                            src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p4-img-1.webp" alt="p4-img-1">
+                                        <a href="https://themexriver.com/wp/avista/services/smart-schedule-control/" target="_self" rel="" aria-label="p4-img-1" class="item-btn wa_magnetic_btn_1">
+                                            <i aria-hidden="true" class="flaticon flaticon-next"></i>
+                                        </a>
+                                    </div>
+                                    <div class="as-portfolio-4-item wa-fix wa-img-cover wa_magnetic_1_trigger">
+                                        <img decoding="async" class="wa_magnetic_1_elm"
+                                            src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p4-img-2.webp" alt="p4-img-2">
+                                        <a href="https://themexriver.com/wp/avista/services/smart-schedule-control/" target="_self" rel="" aria-label="p4-img-2" class="item-btn wa_magnetic_btn_1">
+                                            <i aria-hidden="true" class="flaticon flaticon-next"></i>
+                                        </a>
+                                    </div>
+                                    <div class="as-portfolio-4-item wa-fix wa-img-cover wa_magnetic_1_trigger">
+                                        <img decoding="async" class="wa_magnetic_1_elm"
+                                            src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p4-img-3.webp" alt="p4-img-3">
+                                        <a href="https://themexriver.com/wp/avista/services/smart-schedule-control/" target="_self" rel="" aria-label="p4-img-3" class="item-btn wa_magnetic_btn_1">
+                                            <i aria-hidden="true" class="flaticon flaticon-next"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HOME 03 DARK: Marquee Text ========== -->
+            <div class="elementor-element elementor-element-ee8fffd e-con-full e-flex e-con e-parent" data-id="ee8fffd" data-element_type="container">
+                <div class="elementor-element elementor-widget elementor-widget-tx_moving_text elh-el tx_moving_text"
+                    data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_3&quot;}"
+                    data-widget_type="tx_moving_text.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-marquee-text-4-area wa-p-relative wa-fix pb-90">
+                            <div class="as-marquee-text-4-bg-img wa-p-relative">
+                                <img decoding="async"
+                                    src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/mt4-bg-shape.webp"
+                                    alt="mt4-bg-shape" class="w-100">
+                            </div>
+                            <div class="wa_marquee_left_nopause d-inline-block">
+                                <div class="as-marquee-text-4-text">
+                                    <h3 class="as-h-1 text-elm">Web Design</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">App Design</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Seo</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Digital Marketing</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Branding</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Development</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                </div>
+                            </div>
+                            <div class="wa_marquee_right_nopause d-inline-block">
+                                <div class="as-marquee-text-4-text">
+                                    <h3 class="as-h-1 text-elm">Web Design</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">App Design</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">UI/UX</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Digital Marketing</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Branding</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                    <h3 class="as-h-1 text-elm">Development</h3>
+                                    <i aria-hidden="true" class="flaticon flaticon-sparkle"></i>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HOME 03 DARK: About Section ========== -->
+            <div class="elementor-element elementor-element-13d7c0f e-con-full e-flex e-con e-parent" data-id="13d7c0f" data-element_type="container">
+                <div class="elementor-element elementor-widget elementor-widget-tx_about elh-el tx_about"
+                    data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_4&quot;}"
+                    data-widget_type="tx_about.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-about-4-area pt-85 pb-120 tx-section has-dark">
+                            <div class="container as-container-1">
+                                <div class="as-about-4-sec-title mb-55">
+                                    <div class="as-subtitle-4-wrap wa-fix wa-p-relative">
+                                        <div class="wa_marquee_left_nopause d-inline-block">
+                                            <div class="as-subtitle-4-text">
+                                                <h4 class="as-subtitle-4">Who we are</h4>
+                                                <h4 class="as-subtitle-4">Who we are</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h2 class="tx-title as-h-1 section-title wa_title_spilt_1">We are <span>Avista</span> best digital marketing agency</h2>
+                                </div>
+
+                                <div class="as-about-4-wrap">
+                                    <div class="as-about-4-disc wa-p-relative">
+                                        <p class="as-p-1 disc tx-description">
+                                            Hundreds of brands trust Avista to bring their ideas to life. their success and satisfaction are the reasons we do what we love - creating digital experiences that truly make a difference
+                                        </p>
+                                        <div class="inner-div">
+                                            <div class="author-rating">
+                                                <div class="icon">
+                                                    <i class="fa-solid fa-star wow fadeIn" data-wow-delay=".1s"></i>
+                                                    <i class="fa-solid fa-star wow fadeIn" data-wow-delay=".1s"></i>
+                                                    <i class="fa-solid fa-star wow fadeIn" data-wow-delay=".1s"></i>
+                                                    <i class="fa-solid fa-star wow fadeIn" data-wow-delay=".1s"></i>
+                                                    <i class="fa-solid fa-star wow fadeIn" data-wow-delay=".1s"></i>
+                                                </div>
+                                                <h5 class="as-h-1 title">99+ Happy clients</h5>
+                                            </div>
+                                            <div class="inner-div-line"></div>
+                                            <div class="author-img">
+                                                <div class="author-img-single wa-fix wa-img-cover wow fadeInRight2" data-wow-delay="0s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-2.webp" alt="">
+                                                </div>
+                                                <div class="author-img-single wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".1s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-3.webp" alt="">
+                                                </div>
+                                                <div class="author-img-single wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".2s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-4.webp" alt="">
+                                                </div>
+                                                <div class="author-img-single wa-fix wa-img-cover wow fadeInRight2" data-wow-delay=".3s">
+                                                    <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/author-7.webp" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <img decoding="async"
+                                            src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/a4-bg-shape.webp"
+                                            alt="a4-bg-shape" class="bg-img">
+                                    </div>
+
+                                    <div class="as-about-4-experience wa-bg-default"
+                                        data-background="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/a4-img-1.webp">
+                                        <h3 class="as-h-1 title wa_title_spilt_1">15+ Years Experiences</h3>
+                                        <p class="as-p-1 disc">Over 15 years of experience delivering innovative digital solutions.</p>
+                                    </div>
+                                </div>
+
+                                <div class="as-about-4-wrap-2">
+                                    <div class="as-about-4-growth">
+                                        <h4 class="as-h-1 title">Business Growth</h4>
+                                        <p class="as-p-1 disc">Turning creative ideas into measurable business success.</p>
+                                        <div class="img-elm wa_add_class">
+                                            <img decoding="async"
+                                                src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/a4-progress-img.webp"
+                                                alt="a4-progress-img">
+                                        </div>
+                                    </div>
+
+                                    <div class="as-about-4-marquee wa-p-relative">
+                                        <div class="marquee-bg">
+                                            <div class="wa-fix">
+                                                <div class="wa_marquee_left_nopause d-inline-block">
+                                                    <div class="as-about-4-marquee-item">
+                                                        <div class="single-elm wa-p-relative">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p1-img-1.webp" alt="p1-img-1" class="main-img">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p3-item-logo.webp" alt="p3-item-logo" class="logo">
+                                                        </div>
+                                                        <div class="single-elm wa-p-relative">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p1-img-2.webp" alt="p1-img-2" class="main-img">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p3-item-logo.webp" alt="p3-item-logo" class="logo">
+                                                        </div>
+                                                        <div class="single-elm wa-p-relative">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p1-img-3.webp" alt="p1-img-3" class="main-img">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p3-item-logo.webp" alt="p3-item-logo" class="logo">
+                                                        </div>
+                                                        <div class="single-elm wa-p-relative">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p1-img-4.webp" alt="p1-img-4" class="main-img">
+                                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/11/p3-item-logo.webp" alt="p3-item-logo" class="logo">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="as-about-4-marquee-content">
+                                            <h3 class="as-h-1 title"><span class="odometer" data-count="10">00</span>+ Years of experiences</h3>
+                                            <p class="as-p-1 disc">10 years, countless ideas - turning concepts into successful digital experiences across industries</p>
+                                        </div>
+                                        <div class="as-about-4-marquee-bg-line">
+                                            <span class="line"></span>
+                                            <span class="line"></span>
+                                            <span class="line"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HOME 01 DARK: Portfolio / Services Section ========== -->
+            <div class="elementor-element elementor-element-8937092 e-con-full e-flex e-con e-parent" data-id="8937092" data-element_type="container">
+                <div class="elementor-element elementor-element-9970e17 elementor-widget elementor-widget-tx_service_section elh-el tx_service_section"
+                    data-id="9970e17" data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_2&quot;}"
+                    data-widget_type="tx_service_section.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-portfolio-1-area pb-160 portfolio1_pin_elm_trigger tx-section has-dark">
+                            <div class="container as-container-1">
+                                <div class="as-portfolio-1-sec-title text-center mb-40 portfolio1_pin_elm">
+                                    <h6 class="as-subtitle-1 tx-subTitle">
+                                        <span class="icon">{<i aria-hidden="true" class="fas fa-circle"></i>}</span>
+                                        Portfolio
+                                    </h6>
+                                    <h2 class="tx-title as-sec-title-1 wa_title_spilt_1">Crafting Success Through<br>Design &amp; Strategy</h2>
+                                    <h3 class="as-h-1 big-title wa_title_spilt_1">Some of Works</h3>
+                                </div>
+                                <div class="as-portfolio-1-content">
+                                    <div class="as-portfolio-1-counter wa-p-relative">
+                                        <h5 class="number">
+                                            <span class="odometer" data-count="40">0</span>
+                                        </h5>
+                                        <p class="as-p-1 title"><span>+</span> Projects</p>
+                                    </div>
+                                    <p class="as-p-1 as-portfolio-1-content-disc wow fadeInRight2 tx-description">
+                                        Explore projects that blend creativity and strategy to deliver lasting impact.
+                                    </p>
+                                    <div class="btn-wrap wow fadeInRight2">
+                                        <a href="https://themexriver.com/wp/avista/our-services/" target="_self" rel="" aria-label="More Services" class="as-pr-btn-1-v2 tx-button">
+                                            <span class="text">More Services</span>
+                                            <span class="icon">
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 0 100 100" width="100">
+                                                    <g>
+                                                        <circle cx="90.5" cy="50" r="4.5"></circle>
+                                                        <circle cx="77" cy="50" r="4.5"></circle>
+                                                        <circle cx="77" cy="63.5" r="4.5"></circle>
+                                                        <circle cx="77" cy="36.5" r="4.5"></circle>
+                                                        <circle cx="63.5" cy="50" r="4.5"></circle>
+                                                        <circle cx="50" cy="50" r="4.5"></circle>
+                                                        <circle cx="36.5" cy="50" r="4.5"></circle>
+                                                        <circle cx="23" cy="50" r="4.5"></circle>
+                                                        <circle cx="9.5" cy="50" r="4.5"></circle>
+                                                        <circle cx="63.5" cy="77" r="4.5"></circle>
+                                                        <circle cx="63.5" cy="23" r="4.5"></circle>
+                                                    </g>
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== HOME 01 DARK: CTA "Let's Work Together" Section ========== -->
+            <div class="elementor-element elementor-element-28e7e00 e-con-full e-flex e-con e-parent" data-id="28e7e00" data-element_type="container">
+                <div class="elementor-element elementor-element-0329991 elementor-widget elementor-widget-tx_cta elh-el tx_cta"
+                    data-id="0329991" data-element_type="widget"
+                    data-settings="{&quot;design_style&quot;:&quot;style_1&quot;}"
+                    data-widget_type="tx_cta.default">
+                    <div class="elementor-widget-container">
+                        <section class="as-cta-1-area tx-section has-dark">
+                            <div class="container as-container-1">
+                                <div class="as-cta-1-experi">
+                                    <p class="as-cta-1-experi-title as-h-1">
+                                        <span class="number"><span class="odometer" data-count="15">00</span>+</span>
+                                        Years of experiences of these industries!
+                                    </p>
+                                    <div class="as-cta-1-experi-services">
+                                        <a href="#" target="_self" rel="" aria-label="Web Design" class="link-elm as-h-1 wow fadeInLeft2" data-wow-delay=".2s">Web Design</a>
+                                        <a href="#" target="_self" rel="" aria-label="Logo Design" class="link-elm as-h-1 wow fadeInLeft2" data-wow-delay=".1s">Logo Design</a>
+                                        <a href="#" target="_self" rel="" aria-label="Web Development" class="link-elm as-h-1 wow fadeInLeft2" data-wow-delay="">Web Development</a>
+                                        <a href="#" target="_self" rel="" aria-label="App Design" class="link-elm as-h-1 wow fadeInLeft2" data-wow-delay=".1s">App Design</a>
+                                        <a href="#" target="_self" rel="" aria-label="Digital Marketing" class="link-elm as-h-1 wow fadeInLeft2" data-wow-delay=".2s">Digital Marketing</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="as-cta-1-bg wa-fix">
+                                <div class="container as-container-1">
+                                    <div class="as-cta-1-wrap wa-p-relative cta1_trigger">
+                                        <div class="as-cta-1-social">
+                                            <a href="#" target="_self" rel="" aria-label="Twitter" class="link-elm as-p-1 wow fadeInLeft2 wa_magnetic_btn_1" data-wow-delay=".2s">Twitter <i aria-hidden="true" class="fas fa-long-arrow-right"></i></a>
+                                            <a href="#" target="_self" rel="" aria-label="Instagram" class="link-elm as-p-1 wow fadeInLeft2 wa_magnetic_btn_1" data-wow-delay=".1s">Instagram <i aria-hidden="true" class="fas fa-long-arrow-right"></i></a>
+                                            <a href="#" target="_self" rel="" aria-label="Dribble" class="link-elm as-p-1 wow fadeInRight2 wa_magnetic_btn_1" data-wow-delay="">Dribble <i aria-hidden="true" class="fas fa-long-arrow-right"></i></a>
+                                            <a href="#" target="_self" rel="" aria-label="Instagram" class="link-elm as-p-1 wow fadeInRight2 wa_magnetic_btn_1" data-wow-delay=".1s">Instagram <i aria-hidden="true" class="fas fa-long-arrow-right"></i></a>
+                                        </div>
+
+                                        <div class="as-cta-1-content">
+                                            <h3 class="as-h-1 title-1">Let's Work</h3>
+                                            <h2 class="as-h-1 title-2">Together!</h2>
+                                            <div class="btn-wrap">
+                                                <a href="https://themexriver.com/wp/avista/contact-us/" target="_self" rel="" aria-label="Get started today" class="as-pr-btn-1 wa_btn_split_1 wa_magnetic_btn_1">
+                                                    <span class="text">Get started today</span>
+                                                    <span class="icon">
+                                                        <span class="icon-fix wa-fix">
+                                                            <i aria-hidden="true" class="flaticon flaticon-dot-arrow-1"></i>
+                                                            <i aria-hidden="true" class="flaticon flaticon-next"></i>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                                <a href="https://themexriver.com/wp/avista/contact-us/" target="_self" rel="" aria-label="Book an appointment" class="as-pr-btn-1 wa_btn_split_1 wa_magnetic_btn_1">
+                                                    <span class="text">Book an appointment</span>
+                                                    <i aria-hidden="true" class="fas fa-long-arrow-right"></i>
+                                                </a>
+                                            </div>
+                                            <div class="text-center">
+                                                <a href="#testimonial" target="_self" rel="" aria-label="Go Down" class="as-cta-1-scroll-btn">
+                                                    <div class="icon-elm"></div>
+                                                    <p class="as-p-1 text-elm">Go Down</p>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div class="as-cta-1-img-1 wa-fix wa-img-cover">
+                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/cta1-img-1.webp" alt="cta1-img-1">
+                                        </div>
+                                        <div class="as-cta-1-img-2 wa-fix wa-img-cover">
+                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/cta1-img-2.webp" alt="cta1-img-2">
+                                        </div>
+                                        <div class="as-cta-1-hand-1 wa-fix">
+                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/cta1-hand-1.webp" alt="cta1-hand-1">
+                                        </div>
+                                        <div class="as-cta-1-hand-2 wa-fix">
+                                            <img decoding="async" src="https://themexriver.com/wp/avista/wp-content/uploads/2025/10/cta1-hand-2.webp" alt="cta1-hand-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      </div>
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/0/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Motion Design</div>
-            <div class="work-title">Crypto Explainer</div>
-          </div>
-        </div>
-        <div class="work-card-back">
-          <h3>Crypto Explainer</h3>
-          <p>3D animated explainer video for complex blockchain concepts.</p><a href="#">View Case Study →</a>
-        </div>
-      </div>
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/96/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Social Campaign</div>
-            <div class="work-title">#UnfoldTheFuture</div>
-          </div>
-        </div>
-        <div class="work-card-back">
-          <h3>#UnfoldTheFuture</h3>
-          <p>Viral social media campaign with 2M+ organic reach.</p><a href="#">View Case Study →</a>
-        </div>
-      </div>
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/42/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Documentary</div>
-            <div class="work-title">Craftsmanship</div>
-          </div>
-        </div>
-        <div class="work-card-back">
-          <h3>Craftsmanship</h3>
-          <p>Brand documentary series highlighting artisanal stories.</p><a href="#">View Case Study →</a>
-        </div>
-      </div>
-      <div class="work-card-3d" data-flipped="false">
-        <div class="work-card-front"><img src="https://picsum.photos/id/15/600/450">
-          <div class="work-front-overlay">
-            <div class="work-category">Commercial</div>
-            <div class="work-title">Aether Perfume</div>
-          </div>
-        </div>
-        <div class="work-card-back">
-          <h3>Aether Perfume</h3>
-          <p>Luxury fragrance commercial with cinematic visuals.</p><a href="#">View Case Study →</a>
-        </div>
-      </div>
-    </div>
-  </section>
+        <!-- wrapper-box end -->
 
-  <!-- EXPERIENCE SECTION -->
-  <section>
-    <p class="section-label reveal">our legacy</p>
-    <h2 class="section-title reveal">Experience that speaks</h2>
-    <div class="experience-showcase">
-      <div class="exp-stats">
-        <div class="exp-stat">
-          <div class="exp-number">40+</div>
-          <div class="exp-label">Projects Completed</div>
-        </div>
-        <div class="exp-stat">
-          <div class="exp-number">15+</div>
-          <div class="exp-label">Years Experience</div>
-        </div>
-        <div class="exp-stat">
-          <div class="exp-number">98%</div>
-          <div class="exp-label">Client Retention</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </div><!-- .page-wrapper -->
 
-  <!-- TESTIMONIALS -->
-  <section>
-    <p class="section-label reveal">what clients says</p>
-    <h2 class="section-title reveal">Trusted by creators</h2>
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <div class="testimonial-text">"VidLabs transformed our brand identity with cinematic storytelling. The team's
-          vision is unmatched."</div>
-        <div class="testimonial-author">
-          <div class="author-avatar"><i class="fas fa-user"></i></div>
-          <div>
-            <div class="author-name">Riya Mehta</div>
-            <div class="author-title">Creative Director, Lumiere</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="testimonial-text">"From strategy to motion design, they delivered beyond expectations. Our
-          engagement skyrocketed."</div>
-        <div class="testimonial-author">
-          <div class="author-avatar"><i class="fas fa-user-tie"></i></div>
-          <div>
-            <div class="author-name">Arjun Nair</div>
-            <div class="author-title">Founder, Eleve8</div>
-          </div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <div class="testimonial-text">"The 3D portfolio and storytelling approach gave us a competitive edge. Highly
-          recommend!"</div>
-        <div class="testimonial-author">
-          <div class="author-avatar"><i class="fas fa-bullhorn"></i></div>
-          <div>
-            <div class="author-name">Sneha Rajan</div>
-            <div class="author-title">CMO, StellarX</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- ========== Scripts ========== -->
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.4.2' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2660.css?ver=1776696403' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2371.css?ver=1776696403' media='all' />
+    <link rel='stylesheet' href='https://themexriver.com/wp/avista/wp-content/uploads/elementor/css/post-2697.css?ver=1776696404' media='all' />
 
-  <!-- PRICING SECTION -->
-  <section id="pricing">
-    <p class="section-label reveal">investment</p>
-    <h2 class="section-title reveal">Simple, transparent<br>3D pricing</h2>
-    <div class="pricing-3d-grid">
-      <div class="pricing-card-3d reveal">
-        <div style="font-size:2.5rem; margin-bottom:1rem;"><i class="fas fa-rocket"></i></div>
-        <h3>Starter</h3>
-        <div class="price-3d">₹25K <small>/ project</small></div>
-        <ul class="pricing-features">
-          <li><i class="fas fa-check-circle"></i> Social Media Setup</li>
-          <li><i class="fas fa-check-circle"></i> Brand Identity</li>
-          <li><i class="fas fa-check-circle"></i> 1 Short-Form Video</li>
-        </ul><a href="#contact" class="cta-btn" style="width:100%; text-align:center;">Select</a>
-      </div>
-      <div class="pricing-card-3d featured-3d reveal">
-        <div style="font-size:2.5rem; margin-bottom:1rem;"><i class="fas fa-crown"></i></div>
-        <h3>Growth ★</h3>
-        <div class="price-3d">₹65K <small>/ project</small></div>
-        <ul class="pricing-features">
-          <li><i class="fas fa-check-circle"></i> Social Media Management</li>
-          <li><i class="fas fa-check-circle"></i> Full Brand Identity</li>
-          <li><i class="fas fa-check-circle"></i> 3 Cinematic Videos</li>
-          <li><i class="fas fa-check-circle"></i> Campaign Strategy</li>
-        </ul><a href="#contact" class="cta-btn" style="width:100%; text-align:center;">Get Started</a>
-      </div>
-      <div class="pricing-card-3d reveal">
-        <div style="font-size:2.5rem; margin-bottom:1rem;"><i class="fas fa-globe"></i></div>
-        <h3>Enterprise</h3>
-        <div class="price-3d">Custom</div>
-        <ul class="pricing-features">
-          <li><i class="fas fa-check-circle"></i> Unlimited Platforms</li>
-          <li><i class="fas fa-check-circle"></i> Complete Brand Overhaul</li>
-          <li><i class="fas fa-check-circle"></i> Unlimited Video Production</li>
-          <li><i class="fas fa-check-circle"></i> Priority Support 24/7</li>
-        </ul><a href="#contact" class="cta-btn" style="width:100%; text-align:center;">Contact</a>
-      </div>
-    </div>
-  </section>
+    <script src="https://themexriver.com/wp/avista/wp-includes/js/dist/hooks.min.js?ver=dd5603f07f9220ed27f1"></script>
+    <script src="https://themexriver.com/wp/avista/wp-includes/js/dist/i18n.min.js?ver=c26c3dc7bed366793375"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/contact-form-7/includes/swv/js/index.js?ver=6.1.4"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/contact-form-7/includes/js/index.js?ver=6.1.4"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/bootstrap-min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/swiper.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/lenis.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/wow-min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/odometer.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/nice-select.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/jquery.marquee.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/magnific-popup.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/SplitText.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/gsap.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/customEase.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/appear.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/scrollTrigger.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/pixi.min.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/cursor.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/touchspin.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/avista-custom.js?ver=6.9"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/themes/avista/assets/js/avista-core.js?ver=1777209487"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=3.33.4"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=3.33.4"></script>
+    <script src="https://themexriver.com/wp/avista/wp-includes/js/jquery/ui/core.min.js?ver=1.13.3"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=3.33.4"></script>
+    <script src="https://themexriver.com/wp/avista/wp-content/plugins/avista-core/assets/js/elh-element.js?ver=1777209487"></script>
 
-  <!-- ABOUT PREVIEW -->
-  <section id="about">
-    <div class="about-preview">
-      <div class="reveal"><span class="team-badge"><i class="fas fa-users"></i> About Us</span>
-        <h2 style="font-family:'Bebas Neue'; font-size:2.5rem;">Why choose us</h2>
-        <p style="color:var(--muted); margin:1rem 0;">We blend data, emotion, and motion to build brands that resonate.
-          Our team of strategists, filmmakers, and designers work as one.</p>
-        <div class="team-members">
-          <div class="member">
-            <div class="member-avatar"><i class="fas fa-camera"></i></div>
-            <div>Alex</div><small style="color:var(--muted)">Creative Lead</small>
-          </div>
-          <div class="member">
-            <div class="member-avatar"><i class="fas fa-chart-line"></i></div>
-            <div>Jordan</div><small style="color:var(--muted)">Strategy Head</small>
-          </div>
-          <div class="member">
-            <div class="member-avatar"><i class="fas fa-cube"></i></div>
-            <div>Casey</div><small style="color:var(--muted)">3D Animator</small>
-          </div>
-        </div>
-      </div>
-      <div class="reveal" style="background:var(--card); border-radius:32px; padding:2rem;"><i class="fas fa-quote-left"
-          style="font-size:2rem; color:var(--accent-primary); opacity:0.5;"></i>
-        <p style="margin:1rem 0; font-size:1rem;">We don't just create content — we engineer impact. Every frame tells
-          your brand story.</p>
-        <div class="cta-btn" style="width:fit-content; margin-top:1rem;">Meet the team →</div>
-      </div>
-    </div>
-  </section>
+    <script>
+        const lazyloadRunObserver = () => {
+            const lazyloadBackgrounds = document.querySelectorAll(`.e-con.e-parent:not(.e-lazyloaded)`);
+            const lazyloadBackgroundObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        let lazyloadBackground = entry.target;
+                        if (lazyloadBackground) { lazyloadBackground.classList.add('e-lazyloaded'); }
+                        lazyloadBackgroundObserver.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '200px 0px 200px 0px' });
+            lazyloadBackgrounds.forEach((lazyloadBackground) => { lazyloadBackgroundObserver.observe(lazyloadBackground); });
+        };
+        const events = ['DOMContentLoaded', 'elementor/lazyload/observe'];
+        events.forEach((event) => { document.addEventListener(event, lazyloadRunObserver); });
+    </script>
 
-  <!-- CONTACT SECTION -->
-  <section id="contact">
-    <p class="section-label reveal">Let's connect</p>
-    <h2 class="section-title reveal">Bring your vision<br>to the screen</h2>
-    <div class="contact-grid">
-      <div class="reveal">
-        <p style="margin-bottom:1.5rem; color:var(--muted);">We'll craft a story-driven strategy that aligns with your
-          goals.</p>
-        <div><i class="fas fa-envelope" style="color:var(--accent-primary);"></i> <span
-            style="margin-left:0.5rem;">hello@vidlabs.studio</span></div>
-        <div style="margin-top:1rem;"><i class="fas fa-phone-alt"></i> <span style="margin-left:0.5rem;">+91 98765
-            43210</span></div>
-        <div style="margin-top:1rem;"><i class="fas fa-map-pin"></i> <span style="margin-left:0.5rem;">Chennai | Mumbai
-            | Remote</span></div>
-      </div>
-      <div class="reveal"><input type="text" placeholder="Your name" class="form-input"><input type="email"
-          placeholder="Email" class="form-input"><textarea rows="3"
-          placeholder="Tell us about your project"></textarea><button class="cta-btn" style="border:none;">Send
-          →</button></div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-col">
-        <div style="font-family:'Bebas Neue'; font-size:1.8rem;">Vid<span
-            style="color:var(--accent-primary)">Labs</span></div>
-        <p>Digital marketing & video branding studio.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Explore</h4><a href="#home">Home</a><a href="#services">Services</a><a href="#work">Work</a><a
-          href="#pricing">Pricing</a><a href="#contact">Contact</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a>
-      </div>
-      <div class="footer-col">
-        <h4>Connect</h4><a href="#">Instagram</a><a href="#">LinkedIn</a><a href="#">YouTube</a>
-      </div>
-    </div>
-    <div class="copyright"><span>© 2025 VidLabs Demo </span><span>🌙☀️ Dynamic Theme +
-        3D Effects</span></div>
-  </footer>
-
-  <script>
-    // Mobile Menu Toggle
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-
-    function closeMenu() {
-      hamburgerBtn.classList.remove('active');
-      mobileMenu.classList.remove('active');
-      menuOverlay.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    function openMenu() {
-      hamburgerBtn.classList.add('active');
-      mobileMenu.classList.add('active');
-      menuOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    if (hamburgerBtn) {
-      hamburgerBtn.addEventListener('click', () => {
-        if (mobileMenu.classList.contains('active')) {
-          closeMenu();
-        } else {
-          openMenu();
-        }
-      });
-    }
-
-    if (menuOverlay) {
-      menuOverlay.addEventListener('click', closeMenu);
-    }
-
-    mobileNavLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        closeMenu();
-        if (targetSection) {
-          targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    // Cursor Effects (Desktop only)
-    if (window.innerWidth > 768) {
-      const cursorShadow = document.querySelector('.cursor-shadow');
-      const cursorDot = document.querySelector('.cursor-dot');
-      const cursorRing = document.querySelector('.cursor-ring');
-
-      let mouseX = 0, mouseY = 0;
-      let shadowX = 0, shadowY = 0;
-      let ringX = 0, ringY = 0;
-
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        cursorDot.style.left = mouseX + 'px';
-        cursorDot.style.top = mouseY + 'px';
-      });
-
-      function animateCursor() {
-        shadowX += (mouseX - shadowX) * 0.08;
-        shadowY += (mouseY - shadowY) * 0.08;
-        cursorShadow.style.left = shadowX + 'px';
-        cursorShadow.style.top = shadowY + 'px';
-
-        ringX += (mouseX - ringX) * 0.12;
-        ringY += (mouseY - ringY) * 0.12;
-        cursorRing.style.left = ringX + 'px';
-        cursorRing.style.top = ringY + 'px';
-
-        requestAnimationFrame(animateCursor);
-      }
-      animateCursor();
-
-      document.addEventListener('click', (e) => {
-        const ripple = document.createElement('div');
-        ripple.style.position = 'fixed';
-        ripple.style.left = e.clientX + 'px';
-        ripple.style.top = e.clientY + 'px';
-        ripple.style.width = '8px';
-        ripple.style.height = '8px';
-        ripple.style.borderRadius = '50%';
-        ripple.style.border = `2px solid var(--accent-primary)`;
-        ripple.style.pointerEvents = 'none';
-        ripple.style.zIndex = '9996';
-        ripple.style.transform = 'translate(-50%, -50%) scale(0)';
-        document.body.appendChild(ripple);
-        ripple.animate([
-          { transform: 'translate(-50%, -50%) scale(0)', opacity: 0.8 },
-          { transform: 'translate(-50%, -50%) scale(4)', opacity: 0 }
-        ], { duration: 600 }).onfinish = () => ripple.remove();
-      });
-    }
-
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    const sunIcon = document.querySelector('.sun-icon');
-    const moonIcon = document.querySelector('.moon-icon');
-
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        if (html.dataset.theme === 'dark') {
-          html.dataset.theme = 'light';
-          sunIcon.style.display = 'inline-block';
-          moonIcon.style.display = 'none';
-        } else {
-          html.dataset.theme = 'dark';
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'inline-block';
-        }
-        themeToggle.style.transform = 'rotate(360deg) scale(1.1)';
-        setTimeout(() => { themeToggle.style.transform = ''; }, 500);
-      });
-    }
-
-    if (html.dataset.theme === 'dark') {
-      sunIcon.style.display = 'none';
-      moonIcon.style.display = 'inline-block';
-    } else {
-      sunIcon.style.display = 'inline-block';
-      moonIcon.style.display = 'none';
-    }
-
-    // 3D Work Flip Cards
-    const workCards = document.querySelectorAll('.work-card-3d');
-    workCards.forEach(card => {
-      card.addEventListener('click', function () {
-        const isFlipped = this.getAttribute('data-flipped') === 'true';
-        this.setAttribute('data-flipped', !isFlipped);
-        if (!isFlipped) this.classList.add('flipped');
-        else this.classList.remove('flipped');
-      });
-      if (window.innerWidth > 768) {
-        card.addEventListener('mousemove', (e) => {
-          if (card.getAttribute('data-flipped') === 'true') return;
-          const rect = card.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
-          const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
-          card.style.transform = `perspective(800px) rotateY(${x}deg) rotateX(${y}deg)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          if (card.getAttribute('data-flipped') !== 'true') card.style.transform = '';
-        });
-      }
-    });
-
-    // Pricing Cards 3D Effect
-    const priceCards = document.querySelectorAll('.pricing-card-3d');
-    priceCards.forEach(card => {
-      if (window.innerWidth > 768) {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
-          const y = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
-          card.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${y}deg) translateY(-5px)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          if (card.classList.contains('featured-3d')) card.style.transform = 'translateY(-10px) scale(1.02)';
-          else card.style.transform = '';
-        });
-      }
-    });
-
-    // Scroll Reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.15 });
-    reveals.forEach(el => observer.observe(el));
-
-    setTimeout(() => {
-      document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('visible'));
-    }, 100);
-
-    // Navbar Scroll Effect
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('mainNav');
-      if (window.scrollY > 50) {
-        nav.style.transform = 'perspective(1000px) translateZ(5px)';
-        nav.style.backdropFilter = 'blur(25px)';
-      } else {
-        nav.style.transform = 'perspective(1000px) translateZ(0)';
-        nav.style.backdropFilter = 'blur(20px)';
-      }
-    });
-  </script>
 </body>
-
 </html>
